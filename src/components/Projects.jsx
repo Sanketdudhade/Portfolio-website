@@ -3,27 +3,7 @@ import { ExternalLink, Github, Layers, Server, Code, ShieldCheck, ArrowRight, X,
 import { projectsData } from '../data/portfolioData';
 
 export default function Projects() {
-  const [activeFilter, setActiveFilter] = useState('All');
   const [selectedProject, setSelectedProject] = useState(null);
-
-  const categories = ['All', 'Backend / Java', 'Microservices', 'Full Stack'];
-
-  const filteredProjects = activeFilter === 'All'
-    ? projectsData
-    : projectsData.filter(p => {
-        const cat = p.category.toLowerCase();
-        const filter = activeFilter.toLowerCase();
-        if (filter === 'backend / java') {
-          return cat.includes('backend') || cat.includes('java');
-        }
-        if (filter === 'microservices') {
-          return cat.includes('microservices');
-        }
-        if (filter === 'full stack') {
-          return cat.includes('full stack');
-        }
-        return cat.includes(filter);
-      });
 
   return (
     <section id="projects" className="py-24 bg-[#0e0e12] relative overflow-hidden text-white border-t border-white/10">
@@ -35,38 +15,19 @@ export default function Projects() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <div>
-            <div className="inline-flex items-center gap-2 text-sunset-500 font-mono text-xs uppercase tracking-widest mb-3">
-              <Layers className="w-4 h-4" />
-              <span>FEATURED WORK</span>
-            </div>
-            <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tight text-white uppercase">
-              FEATURED <span className="text-stroke-white">PROJECTS</span>
-            </h2>
+        <div className="mb-12">
+          <div className="inline-flex items-center gap-2 text-sunset-500 font-mono text-xs uppercase tracking-widest mb-3">
+            <Layers className="w-4 h-4" />
+            <span>FEATURED WORK</span>
           </div>
-
-          {/* Filter Pills */}
-          <div className="flex flex-wrap gap-2 bg-white/5 p-1.5 rounded-full border border-white/10">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveFilter(cat)}
-                className={`px-5 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-all ${
-                  activeFilter === cat
-                    ? 'bg-sunset-500 text-white shadow-lg shadow-sunset-500/30'
-                    : 'text-gray-400 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tight text-white uppercase">
+            FEATURED <span className="text-stroke-white">PROJECTS</span>
+          </h2>
         </div>
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project) => (
+          {projectsData.map((project) => (
             <div
               key={project.id}
               className="group bg-[#15161d] rounded-2xl border border-white/10 hover:border-sunset-500/50 transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-xl hover:-translate-y-1.5"
