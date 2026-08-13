@@ -125,8 +125,12 @@ export default function About({ onOpenContact }) {
                 Sanket is ready for full-time software engineering roles and contract assignments.
               </p>
               <button
-                onClick={onOpenContact}
-                className="w-full py-3 rounded-full bg-sunset-500 text-white font-bold text-xs uppercase tracking-widest hover:bg-sunset-600 transition-colors shadow-lg flex items-center justify-center gap-2"
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onOpenContact) onOpenContact(e);
+                }}
+                className="w-full py-3 rounded-full bg-sunset-500 text-white font-bold text-xs uppercase tracking-widest hover:bg-sunset-600 transition-colors shadow-lg flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>Get In Touch</span>
                 <ArrowRight className="w-4 h-4" />

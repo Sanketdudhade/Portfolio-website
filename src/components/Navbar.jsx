@@ -19,8 +19,22 @@ export default function Navbar({ onOpenContact }) {
     { name: 'ABOUT', href: '#about' },
     { name: 'SERVICES', href: '#skills' },
     { name: 'CLI TERMINAL', href: '#terminal' },
-    { name: 'CONTACT', href: '#contact', onClick: onOpenContact },
+    { name: 'CONTACT', href: '#contact' },
   ];
+
+  const handleNavClick = (e, href, customOnClick) => {
+    if (href && href.startsWith('#')) {
+      e.preventDefault();
+      const targetId = href.replace('#', '');
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    if (customOnClick) {
+      customOnClick(e);
+    }
+  };
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -53,8 +67,8 @@ export default function Navbar({ onOpenContact }) {
               <a
                 key={link.name}
                 href={link.href}
-                onClick={link.onClick}
-                className="text-xs font-semibold tracking-widest text-gray-300 hover:text-sunset-400 transition-colors uppercase py-1 relative group"
+                onClick={(e) => handleNavClick(e, link.href, link.onClick)}
+                className="text-xs font-semibold tracking-widest text-gray-300 hover:text-sunset-400 transition-colors uppercase py-1 relative group cursor-pointer"
               >
                 {link.name}
                 <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-sunset-500 transition-all duration-300 group-hover:w-full"></span>
@@ -65,8 +79,12 @@ export default function Navbar({ onOpenContact }) {
           {/* Right Header Action Button & Mobile Hamburger */}
           <div className="flex items-center gap-4">
             <button
-              onClick={onOpenContact}
-              className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black font-semibold text-xs uppercase tracking-wider hover:bg-sunset-400 hover:text-white transition-all shadow-md"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenContact) onOpenContact(e);
+              }}
+              className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black font-semibold text-xs uppercase tracking-wider hover:bg-sunset-400 hover:text-white transition-all shadow-md cursor-pointer"
             >
               <span>Let's Connect</span>
               <ArrowUpRight className="w-4 h-4" />
@@ -91,22 +109,23 @@ export default function Navbar({ onOpenContact }) {
               <a
                 key={link.name}
                 href={link.href}
-                onClick={() => {
+                onClick={(e) => {
                   setMobileMenuOpen(false);
-                  if (link.onClick) link.onClick();
+                  handleNavClick(e, link.href, link.onClick);
                 }}
-                className="text-sm font-semibold tracking-widest text-gray-200 hover:text-sunset-400 uppercase py-2 border-b border-white/5"
+                className="text-sm font-semibold tracking-widest text-gray-200 hover:text-sunset-400 uppercase py-2 border-b border-white/5 cursor-pointer"
               >
                 {link.name}
               </a>
             ))}
           </nav>
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
               setMobileMenuOpen(false);
-              onOpenContact();
+              if (onOpenContact) onOpenContact();
             }}
-            className="w-full mt-4 py-3 rounded-full bg-sunset-500 text-white font-bold text-xs uppercase tracking-widest shadow-lg flex items-center justify-center gap-2"
+            className="w-full mt-4 py-3 rounded-full bg-sunset-500 text-white font-bold text-xs uppercase tracking-widest shadow-lg flex items-center justify-center gap-2 cursor-pointer"
           >
             Let's Talk Projects <ArrowUpRight className="w-4 h-4" />
           </button>

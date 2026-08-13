@@ -34,18 +34,53 @@ export default function ContactModal({ isOpen, onClose }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => {
-      setFormSubmitted(false);
-      onClose();
-    }, 2500);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/dudhadesanket378@gmail.com", {
+        method: "POST",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          _subject: `New Portfolio Inquiry from ${formData.name}`
+        })
+      });
+
+      if (response.ok) {
+        setFormSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        // Fallback to mailto link
+        window.location.href = `mailto:${personalData.email}?subject=Portfolio Inquiry from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(formData.message)}%0A%0AReply to: ${encodeURIComponent(formData.email)}`;
+        setFormSubmitted(true);
+      }
+    } catch (err) {
+      // Fallback to mailto link
+      window.location.href = `mailto:${personalData.email}?subject=Portfolio Inquiry from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(formData.message)}%0A%0AReply to: ${encodeURIComponent(formData.email)}`;
+      setFormSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
-      <div className="bg-[#14151e] border border-white/15 rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl overflow-hidden">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-[#181924] border border-white/20 rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl overflow-hidden"
+      >
         
         {/* Ambient Top Glow */}
         <div className="absolute -top-12 -right-12 w-48 h-48 bg-sunset-500/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -145,10 +180,11 @@ export default function ContactModal({ isOpen, onClose }) {
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl bg-sunset-500 hover:bg-sunset-600 text-white font-bold text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
+              disabled={isSubmitting}
+              className="w-full py-3.5 rounded-xl bg-sunset-500 hover:bg-sunset-600 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
             >
               <Send className="w-4 h-4" />
-              <span>Send Message</span>
+              <span>{isSubmitting ? 'Sending Email...' : 'Send Message'}</span>
             </button>
           </form>
         )}
